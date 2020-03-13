@@ -43,3 +43,71 @@ class Menu
     end
   end
   end
+
+
+welcome
+
+
+# Get the user name 
+table_name = ''
+user_name = ''
+    loop do
+    puts 'hello, what is your name?'
+    user_name = gets.chomp 
+    if File.exist?(user_name + ".csv")
+      data = []
+      file = File.read(user_name + ".csv")
+      csv = CSV.parse(file, headers: true)
+      csv.each do |row|
+      data << row.to_hash.values    
+      end
+      table_name = TTY::Table.new ['day','assets', 'liabilities','capital'], data
+      break
+    else 
+      p 'you have imputed a user that does not exist,'
+      p 'would you like to make a new user'
+      new_user_input = gets.chomp
+      case
+      when 'no'
+    
+      when 'yes'
+      CSV.open("#{user_name}.csv", "wb") do |csv|
+       csv << ['day', "assets", "liabilities", "capital"]
+
+      p "welcome #{user_name} you are now a user."
+      break
+     end
+      end
+    end
+end
+
+running = true
+while running
+  # running the app
+  puts "welcome back #{user_name} what would you like to do?"
+  puts'>   1 view table'
+  puts'>   2 update table'
+  puts'>   3 exit'
+
+  old_user_input = gets.chomp
+  p old_user_input
+  case old_user_input
+  when "1"
+  
+    puts Menu.view_table(table_name)
+  when '2'
+  Menu.update_table(table_name)
+
+  when '3'
+
+    running = false
+    Menu.quit(user_name,table_name)
+  else
+  puts "DEFAULT CASE"
+
+  end
+end
+
+
+
+
